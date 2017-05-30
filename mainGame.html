@@ -5,6 +5,7 @@
     <title>Zombie Shooter</title>
 
     <script src="http://cdn.babylonjs.com/2-5/babylon.max.js"></script>
+    <!-- <script src="Assets/babylon.2.3.max.js"></script> -->
     <script src="./babylon.terrainMaterial.js"></script>
     <script src="sceneInitializer.js"></script>
 
@@ -25,15 +26,76 @@
             margin: 0;
             padding: 0;
         }
+
+        #lock{
+            position: absolute;
+            top:50%;
+            left:50%;
+            margin-top:-37px;
+            margin-left:-37px;
+        }
+        .gui {
+            position: absolute;
+            left: 0px;
+            top: 850px;
+            z-index: 1;
+            margin: 25px 0 0 25px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            pointer-events: none;
+        }
+        .gui .guiElement, .gui .timer, .gui {
+            color: white;
+            font-size: 1em;
+            font-family: "Montserrat", sans-serif;
+            font-weight: lighter;
+            text-shadow: 3px 3px 1px #333;
+        }
+        .gui .timer {
+            font-size: 1em;
+            font-family: "Montserrat", sans-serif;
+            font-weight: bolder;
+        }
+        .gui .instructions{
+            float: right;
+            font-size: 1em;
+            font-family: "Montserrat", sans-serif;
+            font-weight: bold;
+        }
+
+        .gui .win{
+
+        }
+
+
+
+
+
     </style>
-
-
 </head>
 
 
 <body>
 
-<canvas id="mainGameCanvas"></canvas>
+    <img id="lock" src="Assets/lock.png">
+     <div class="gui">
+            <!--The countdown before the game over screen-->
+            <div class="timer">Time : <span id="time">0</span></div>
+            <div class="scores">Score : <span id="score">0</span></div>
+            <br>
+            <div class="instructions", id="instructions">
+                Use W, A, S, D to Move<br>
+                Click to KILL<br>
+                Hold Space to JUMP
+            </div>
+            <br>
+            <div class="win" id="win"></div>
+    </div>
+
+
+    <canvas id="mainGameCanvas"></canvas>
 
 </body>
 
