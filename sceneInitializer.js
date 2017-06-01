@@ -1,3 +1,17 @@
+/*
+* Program: ZombieFPS
+* Description: Zombie First Person Shooter Game in babylon.js
+* File Name: sceneInitializer.js
+* Desc: this is the main javascript file for the project
+* (around 450 lines)
+* Creator: Abdul Moiz Sheikh
+* Contributors: Saad, Jareer
+* Help was taken from pixelcodr.com to implement many features of the game.
+*/
+
+
+//-- Global Variables Initialization --//
+
 var
 globalCanvas,
 globalEngine,
@@ -12,16 +26,26 @@ var globalMesh = [];
 var s;
 var globalIndex = 0;
 
-// var globalMesh1, globalMesh2, globalMesh3, globalMesh4, globalMesh5, globalMesh6, globalMesh7, globalMesh8, globalMesh9, globalMesh10;
-
 var score = 0;
 
 var gunshot;
 var ENDINGS = [];
 var ENEMIES = [];
 
+//-- End Global Variables Initialization --//
 
 
+
+
+/**
+* Function name: CreateTerrain
+* Desc: This function creates the terrain(Ground) seen in the project
+* Inputs: None
+* Output: Ground
+* Creator: Abdul Moiz Sheikh
+* Code help taken from babylon.js official documentation and examples.
+* Date: 24/05/17
+*/
 var createTerrain = function () {
 
     // Create terrain material
@@ -33,9 +57,6 @@ var createTerrain = function () {
     terrainMaterial.mixTexture = new BABYLON.Texture("textures/terrain/mixMap.png", globalScene);
 
     // Diffuse textures following the RGB values of the mix map
-    // diffuseTexture1: Red
-    // diffuseTexture2: Green
-    // diffuseTexture3: Blue
     terrainMaterial.diffuseTexture1 = new BABYLON.Texture("textures/terrain/floor.png", globalScene);
     terrainMaterial.diffuseTexture2 = new BABYLON.Texture("textures/terrain/rock.png", globalScene);
     terrainMaterial.diffuseTexture3 = new BABYLON.Texture("textures/terrain/grass.png", globalScene);
@@ -60,7 +81,15 @@ var createTerrain = function () {
 };
 
 
-
+/**
+* Function name: loadSkyBox
+* Desc: This function creates the SkyBox seen in the project
+* Inputs: None
+* Output: Skybox
+* Creator: Abdul Moiz Sheikh
+* Help taken from FPS Shooter game by Julian Chenard
+* Date: 25/05/17
+*/
 var loadSkyBox = function () {
     globalSkybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:5000.0}, globalScene);
     var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", globalScene);
@@ -74,7 +103,14 @@ var loadSkyBox = function () {
 };
 
 
-
+/**
+* Function name: LoadGun
+* Desc: This function creates the gun object seen in the project
+* Inputs: None
+* Output: Gun (as child of camera)
+* Creator: Saad Mairaj Ansari
+* Date: 26/05/17
+*/
 var loadGun = function(fileName, sceneName){
     var model = BABYLON.SceneLoader.ImportMesh("", "", fileName, sceneName, function(importedMeshes){
         importedMeshes.forEach(function(mesh){
@@ -90,72 +126,21 @@ var loadGun = function(fileName, sceneName){
     return model;
 }
 
-var loadModel = function (fileName, sceneName) {
-    globalMesha = new BABYLON.Mesh("parent", globalScene);
-    globalMesha.isVisible = false;
-    var model = BABYLON.SceneLoader.ImportMesh("", "", fileName, sceneName, function (importedMeshes, particleSystems, skeleton) {
-
-
-        importedMeshes.forEach(function (mesh) {
-           mesh.scaling.x = 70;
-           mesh.scaling.y = 70;
-           mesh.scaling.z = 70;
-           mesh.position.x = 0;
-           mesh.position.y = -320;
-           mesh.position.z = 0;
-           mesh.parent = globalMesha;
-
-
-
-           // console.log(ENEMIES);
-        });
-        globalScene.beginAnimation(skeleton[0], 0, 120, true, 1.0);
-
-
-        // var dude = importedMeshes[0];
-        // dude.rotation.y = Math.PI;
-
-        // globalScene.beginAnimation(skeleton[0], 0, 100, true, 1.0);
-
-    });
-    return model;
-};
-
-var loadModel2 = function (fileName, sceneName) {
-    var model = BABYLON.SceneLoader.ImportMesh("", "", fileName, sceneName, function (importedMeshes, particleSystems, skeleton) {
-
-        ENEMIES.push(importedMeshes[0])
-        importedMeshes.forEach(function (mesh) {
-           mesh.scaling.x = 50;
-           mesh.scaling.y = 50;
-           mesh.scaling.z = 50;
-           mesh.position.x = 200;
-           mesh.position.y = -320;
-           mesh.position.z = 15;
-
-
-
-
-           // console.log(ENEMIES);
-        });
-        globalScene.beginAnimation(skeleton[0], 0, 120, true, 1.0);
-
-        // var dude = importedMeshes[0];
-        // dude.rotation.y = Math.PI;
-
-        // globalScene.beginAnimation(skeleton[0], 0, 100, true, 1.0);
-
-    });
-
-    return model;
-};
-
-
+/**
+* Function name: LoadZombie
+* Desc: This function imports the zombie seen in the project and runs its animation in loop.
+* Inputs: fileName, sceneName, xPosition of imported mesh, yPosition of Imported Mesh, zPosition of Imported Mesh
+* Output: Zombie
+* Date: 24/05/17
+*/
 var loadZombie = function (fileName, sceneName, xPos, yPos, zPos) {
+    //-- An invisible mesh is created to make parent of zombie model. --//
     var zio = new BABYLON.Mesh("parent", globalScene);
     zio.isVisible = false;
     zio.checkCollisions = true;
 
+
+    //-- Zombie Import --//
     var model = BABYLON.SceneLoader.ImportMesh("", "", fileName, sceneName, function (importedMeshes, particleSystems, skeleton) {
 
 
@@ -170,26 +155,27 @@ var loadZombie = function (fileName, sceneName, xPos, yPos, zPos) {
            mesh.position.z = zPos;
            mesh.parent = zio;
            globalMesh.push(zio);
-           // mesh.checkCollisions = true;
+           mesh.checkCollisions = true;
 
-
-
-
-           // console.log(ENEMIES);
         });
+
+        //-- Animation of zombie movement; static --//
         globalScene.beginAnimation(skeleton[0], 0, 100, true, 1.0);
-
-        // var dude = importedMeshes[0];
-        // dude.rotation.y = Math.PI;
-
-        // globalScene.beginAnimation(skeleton[0], 0, 100, true, 1.0);
-
     });
 
     return model;
 };
 
 
+
+/**
+* Function name: UpdateScore
+* Desc: This function updates the score
+* Inputs: time
+* Output: new Score
+* Created By: Jareer Arshad
+* Date: 27/05/17
+*/
 var updateScore = function(time){
     score += 100 - time*2;
     var scoreHTML = document.getElementById("score");
@@ -197,13 +183,30 @@ var updateScore = function(time){
 }
 
 
-
+/**
+* Function name: UpdateTime
+* Desc: This function updates the Time on the GUI
+* Inputs: None
+* Output: new Time
+* Created By: Saad Mairaj
+* Date: 27/05/17
+*/
 var updateTime = function(){
     time++;
     var timeGui = document.getElementById("time");
     timeGui.innerHTML = String(time);
 }
 
+
+
+/**
+* Function name: LoadManyZombies
+* Desc:
+* Inputs: None
+* Output: Initializes many zombies and their starting positions and movement.
+* Created By: Saad Mairaj
+* Date: 27/05/17
+*/
 var loadManyZombies = function(){
     loadZombie('./Assets/zombie/gears-of-war-3-lambent-female-boned-animated-testing.babylon', globalScene, 0, -350, 0);
     loadZombie('./Assets/zombie/gears-of-war-3-lambent-female-boned-animated-testing.babylon', globalScene, 100, -340, 15);
@@ -220,6 +223,15 @@ var loadManyZombies = function(){
 }
 
 // Doesn't Work
+/**
+* Function name: minimap
+* Desc:
+* Inputs: None
+* Output:
+* Created By: Saad Mairaj
+* Copied from www.pixelcodr.com/tutorials, specifically FPS shooter tutorial
+* Date: 27/05/17
+*/
 var minimap = function(){
         var mm = new BABYLON.FreeCamera("minimap", new BABYLON.Vector3(0, 100, 0), globalScene);
         mm.setTarget(new BABYLON.Vector3(0, 0, 0));
@@ -258,6 +270,16 @@ var minimap = function(){
         globalScene.activeCameras.push(mm);
 }
 
+
+
+/**
+* Function name: InitializeScene
+* Desc: This function creates the necessary environment along with initializing all elements of the game.
+* Inputs: None
+* Output: Complete Game
+* Created By: Abdul Moiz Sheikh
+* Date: 27/05/17
+*/
 var initializeScene = function () {
 
     globalCanvas = document.getElementById('mainGameCanvas'); // Points to the main canvas in the html file
@@ -267,9 +289,15 @@ var initializeScene = function () {
 
     globalScene = new BABYLON.Scene(globalEngine); // scene
 
+
+    //-- The following lines implement a Free Camera for player movement --//
     globalCamera = new BABYLON.FreeCamera('globalCamera', new BABYLON.Vector3(-50, -405, 1650), globalScene);
     globalCamera.applyGravity = true;
+
+    //-- Speed of Camera upon movement --//
     globalCamera.speed = 50;
+
+    //-- Inertia of globalCamera. The value of inertia when the camera stops moving. (For how long will the camera slide) --//
     globalCamera.inertia = 0.09;
     globalCamera.setTarget(new BABYLON.Vector3(1500, 0, -1350)); // lookAt 0, 0, 0
     // globalCamera.attachControl(globalCanvas, true); // True - to attach control
@@ -277,14 +305,20 @@ var initializeScene = function () {
     globalCamera.keysDown.push(83);   // s
     globalCamera.keysLeft.push(65);   // a
     globalCamera.keysRight.push(68);  // d
+
+    //-- Value of Gravity in the Scene --//
     globalScene.gravity = new BABYLON.Vector3(0, -9.81, 0);
+
+    //-- The player's body (or its representation) --//
     globalCamera.ellipsoid = new BABYLON.Vector3(1, 25 ,1);
     globalScene.collisionsEnabled = true;
     globalCamera.checkCollisions = true;
+
+
     globalCamera.angularSensibility = 1000;
 
 
-
+    //-- Global variable gunshot is initialized with the shot.wav file.
     gunshot = new BABYLON.Sound("gunshot", "Assets/shot.wav", globalScene, null, { loop: false, autoplay: false });
 
 
@@ -292,34 +326,36 @@ var initializeScene = function () {
     loadSkyBox();
     createTerrain();
 
+
+    //-- Code to initialize Lighting in the scene --//
     globalLight = new BABYLON.HemisphericLight("globalLight", new BABYLON.Vector3(1500, 600, -1250), globalScene);
     globalLight.diffuse = new BABYLON.Color3(1, 1, 1);
     globalLight.specular = new BABYLON.Color3(20, 20, 20);
 
-
-    // loadModel('./Assets/Tree.babylon', globalScene);
-    // loadModel('./Assets/zombie/gears-of-war-3-lambent-female-boned-animated-testing.babylon', globalScene);
-
     loadManyZombies();
 
+
+    // Import Tree for Jareer
     // TREE_MODEL.position = new BABYLON.Vector3(0, 5, 0);
     // initializeGame();
     loadGun('./Assets/Gun/mp5k.babylon', globalScene);
 
-    // minimap();
-    // globalScene.beginAnimation(globalScene.getSkeletonById(1), 0, 61, true, 1.0);
 
-    // console.log(ENEMIES);
+
+
+    //-- Movement of Zombie done here --//
     globalScene.registerBeforeRender(function(){
-        // globalMesha.position.x += 1;
+        //-- A global Variable is updated. If its value is divisible by 50, then the zombie's parent is moved. --//
         if(globalIndex %  50 === 0){
             for (var i = 0; i < globalMesh.length; i++) {
+                //-- Z-Position and Y-Position of the globalMesh is increased giving the effect of zombie movement --//
                 globalMesh[i].position.z += 3;
                 globalMesh[i].position.y += 0.01;
             }
         }
         globalIndex++;
 
+        //-- Code to try to implement minimap; Doesn't Work --//
         if (globalScene.activeCameras[0]) {
                 s.position.x = globalScene.activeCameras[0].position.x;
                 s.position.z = globalScene.activeCameras[0].position.z;
@@ -328,31 +364,13 @@ var initializeScene = function () {
     });
 
 
-
-    //Jump Code
-    document.addEventListener("keydown", function (event) {
-        if(event.keyCode == 32){
-            globalCamera.position.y += 150;
-        }
-    });
-
-    document.addEventListener("keyup", function (event) {
-        if(event.keyCode == 32){
-            globalCamera.position.y -= 150;
-        }
-    });
-
-
+    //-- The following lines request the PointerLockAPI Upon initial click --//
     globalCanvas.addEventListener("click", function(evt){
         globalCanvas.requestPointerLock = globalCanvas.requestPointerLock || globalCanvas.mozRequestPointerLock || globalCanvas.webkitRequestPointerLock;
 
         if(globalCanvas.requestPointerLock){
             globalCanvas.requestPointerLock();
         }
-
-        // globalCamera.detachControl(globalCanvas);
-        // globalCanvas.requestPointerLock();
-
             var pointerlockchange = function(event){
                 controlEnabled =
                     document.mozPointerLockElement === globalCanvas||
@@ -362,18 +380,13 @@ var initializeScene = function () {
 
                 if(!controlEnabled)
                 {
+                    //-- if PointerLock is enabled, disable it --//
                     globalCamera.detachControl(globalCanvas);
                 }
                 else{
                     globalCamera.attachControl(globalCanvas);
                 }
 
-
-
-                    // globalCamera.attachControl(globalCanvas);
-                // else{
-                //     _this.camera.attachControl(globalCanvas);
-                // }
             };
 
             document.addEventListener("pointerlockchange", pointerlockchange, false);
@@ -381,52 +394,50 @@ var initializeScene = function () {
             document.addEventListener("webkitpointerlockchange", pointerlockchange, false);
             document.addEventListener("mozpointerlockchange", pointerlockchange, false);
 
-            // document.addEventListener("mousemove", moveCallback, false);
         }, false);
 
+
+        //-- The following lines of code implement the shooting functionality on click --//
         globalCanvas.addEventListener("click", function(evt){
+
             var width = globalEngine.getRenderWidth();
             var height = globalEngine.getRenderHeight();
+
             gunshot.play();
+
+            //-- This code picks the mesh in the middle of screen --//
             var pickInfo = globalScene.pick(width/2, height/2, null, false, globalCamera);
             if(pickInfo.pickedMesh.name === "Lambent_Female"){
                 var Enemy = pickInfo.pickedMesh;
                 var index = ENEMIES.indexOf(Enemy);
                 ENEMIES.splice(index, 1);
-                // console.log(ENEMIES.length);
 
-                // pickInfo.pickedMesh.scaling.x = 2;
-                // pickInfo.pickedMesh.scaling.y = 2;
-                // pickInfo.pickedMesh.scaling.z = 2;
-
+                //-- This line deletes the zombie from the scene --//
                 pickInfo.pickedMesh.dispose();
+
+                //-- Score is updated --//
                 updateScore(time);
 
+                //-- If No Enemies Present, You win the game; A text is shown on the screen --//
                 if(ENEMIES.length == 0){
-                    console.log("You Win");
-                    // updateScore(time);
                     var win = document.getElementById("instructions");
                     win.innerHTML = "Congratulations! You won. Your Score is "+score;
                 }
             }
-
-
-            // console.log(pickInfo.pickedMesh.name);
         });
 
-
-
-
+    //-- Keeps rendering the main Scene --//
     globalEngine.runRenderLoop(function () { // main render loop
         globalScene.render();
-        // console.log(time);
-        // console.log(globalCamera.position);
     });
 
 };
 
+//-- updateTime function is called every 1 second --//
 setInterval(updateTime, 1000);
 
+
+//-- Initializes Game --//
 document.addEventListener('DOMContentLoaded', function () {
 
     if(BABYLON.Engine.isSupported()){
@@ -434,7 +445,5 @@ document.addEventListener('DOMContentLoaded', function () {
     } else {
         alert("Cannot start!");
     }
-
-
 
 });
